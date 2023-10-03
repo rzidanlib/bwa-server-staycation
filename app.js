@@ -3,21 +3,24 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-const methodeOverride = require("method-override");
+const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
 // import mongoose
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://127.0.0.1:27017/db_staycation", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-});
+mongoose.connect(
+  "mongodb+srv://libraryDevz:zone2002@cluster0.omfysmx.mongodb.net/db_staycation?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  }
+);
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-// Admin Router
+// router admin
 const adminRouter = require("./routes/admin");
 const apiRouter = require("./routes/api");
 
@@ -26,7 +29,7 @@ var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(methodeOverride("_method"));
+app.use(methodOverride("_method"));
 app.use(
   session({
     secret: "keyboard cat",
@@ -48,7 +51,7 @@ app.use(
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-// Admin Controller
+// admin
 app.use("/admin", adminRouter);
 app.use("/api/v1/member", apiRouter);
 
