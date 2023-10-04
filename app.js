@@ -6,6 +6,7 @@ var logger = require("morgan");
 const methodOverride = require("method-override");
 const session = require("express-session");
 const flash = require("connect-flash");
+const MemoryStore = require("memorystore")(session);
 // import mongoose
 const mongoose = require("mongoose");
 mongoose.connect(
@@ -35,9 +36,11 @@ app.use(
   session({
     secret: "keyboard cat",
     resave: true,
-    maxAge: 8 * 60 * 60 * 1000,
-    cookie: { secure: true }, // 8 hours
+    cookie: { maxAge: 86400000, sameSite: "none", secure: true }, // 8 hours
     saveUninitialized: true,
+    store: new MemoryStore({
+      checkPeriod: 86400000, // prune expired entries every 24h
+    }),
   })
 );
 app.use(flash());
