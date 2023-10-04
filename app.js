@@ -34,9 +34,11 @@ app.set("trust proxy", 1); // trust first proxy
 app.use(
   session({
     secret: "keyboard cat",
-    resave: false,
+    resave: true,
     saveUninitialized: true,
-    cookie: { secure: true },
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+    },
   })
 );
 app.use(flash());
