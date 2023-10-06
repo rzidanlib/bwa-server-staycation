@@ -325,7 +325,7 @@ module.exports = {
       const alertMessage = req.flash("alertMessage");
       const alertStatus = req.flash("alertStatus");
       const alert = { message: alertMessage, status: alertStatus };
-      res.render("admin/item/edit_item", {
+      res.render("admin/item/view_item", {
         title: "Staycation | Edit Item",
         alert,
         item,
