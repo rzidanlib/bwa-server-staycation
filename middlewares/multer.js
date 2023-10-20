@@ -2,7 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 // import uuid from "uuid/v4";
-
+path.join(process.cwd(), "public", "images", FILENAME)
 const storageMultiple = multer.diskStorage({
   destination: function (req, file, cb) {
     var dir = "public/images";
