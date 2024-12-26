@@ -10,6 +10,9 @@ const Users = require("../models/Users");
 const fs = require("fs-extra");
 const path = require("path");
 const bcrypt = require("bcryptjs");
+const config = require("../config/env");
+
+const baseUrl = config.BASE_URL;
 
 module.exports = {
   viewSignin: async (req, res) => {
@@ -152,6 +155,7 @@ module.exports = {
         alert,
         title: "Staycation | Bank",
         user: req.session.user,
+        baseUrl,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -300,6 +304,7 @@ module.exports = {
         item,
         action: "show image",
         user: req.session.user,
+        baseUrl,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -429,6 +434,7 @@ module.exports = {
         feature,
         activity,
         user: req.session.user,
+        baseUrl,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -622,6 +628,7 @@ module.exports = {
         user: req.session.user,
         booking,
         alert,
+        baseUrl,
       });
     } catch (error) {
       res.redirect(`/admin/booking`);

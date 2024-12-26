@@ -7,12 +7,10 @@ const methodOverride = require("method-override");
 const session = require("cookie-session");
 const flash = require("connect-flash");
 const cors = require("cors");
-const dotenv = require("dotenv");
-
-dotenv.config();
+const config = require("./config/env");
 
 const mongoose = require("mongoose");
-mongoose.connect(process.env.DATABASE_URL, {
+mongoose.connect(config.DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true, // DeprecationWarning: MongoDB driver >= 6.0
