@@ -2,15 +2,15 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// const tempDir = "/tmp/public/images";
+// Gunakan direktori sementara
+const tempDir = "/tmp/public/images";
 
 const storageMultiple = multer.diskStorage({
   destination: function (req, file, cb) {
-    var dir = "public/images";
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
     }
-    cb(null, dir);
+    cb(null, tempDir);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -25,10 +25,13 @@ const uploadMultiple = multer({
   },
 }).array("image", 12);
 
-// Set storage engine
 const storage = multer.diskStorage({
-  destination: "public/images",
-  // destination: tempDir,
+  destination: function (req, file, cb) {
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+    cb(null, tempDir);
+  },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
   },
@@ -42,13 +45,9 @@ const upload = multer({
   },
 }).single("image");
 
-// // Check file Type
 function checkFileType(file, cb) {
-  // Allowed ext
   const fileTypes = /jpeg|jpg|png|gif/;
-  // Check ext
   const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
-  // Check mime
   const mimeType = fileTypes.test(file.mimetype);
 
   if (mimeType && extName) {
