@@ -1,10 +1,14 @@
 var seeder = require("mongoose-seed");
 var mongoose = require("mongoose");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 // Connect to MongoDB via Mongoose
 seeder.connect(
+  process.env.DATABASE_URL,
   // "mongodb+srv://libraryDevz:zone2002@cluster0.omfysmx.mongodb.net/db_staycation?retryWrites=true&w=majority",
-  "mongodb://localhost:27017/db_staycation",
+  // "mongodb://localhost:27017/db_staycation",
   {
     useNewUrlParser: true,
     useCreateIndex: true,
