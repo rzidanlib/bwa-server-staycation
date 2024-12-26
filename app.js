@@ -17,8 +17,8 @@ const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
+  useCreateIndex: true, // DeprecationWarning: MongoDB driver >= 6.0
+  useFindAndModify: false, // Tidak diperlukan di versi terbaru mongoose
   connectTimeoutMS: 30000,
 });
 
@@ -81,5 +81,4 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-// module.exports = app;
-export default app;
+module.exports = app;
