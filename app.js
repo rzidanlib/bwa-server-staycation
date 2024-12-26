@@ -11,12 +11,14 @@ const cors = require("cors");
 // import mongoose
 const mongoose = require("mongoose");
 mongoose.connect(
-  "mongodb+srv://libraryDevz:zone2002@cluster0.omfysmx.mongodb.net/db_staycation?retryWrites=true&w=majority",
+  // "mongodb+srv://libraryDevz:zone2002@cluster0.omfysmx.mongodb.net/db_staycation?retryWrites=true&w=majority",
+  "mongodb://localhost:27017/db_staycation",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false,
+    connectTimeoutMS: 30000,
   }
 );
 
@@ -27,6 +29,7 @@ const adminRouter = require("./routes/admin");
 const apiRouter = require("./routes/api");
 
 var app = express();
+app.set("etag", "strong");
 app.use(cors({ origin: true, credentials: true }));
 
 // view engine setup
