@@ -16,6 +16,7 @@
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
+    "dotenv": "^16.4.7",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "express-session": "^1.17.0",

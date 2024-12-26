@@ -7,20 +7,20 @@ const methodOverride = require("method-override");
 const session = require("cookie-session");
 const flash = require("connect-flash");
 const cors = require("cors");
+const dotenv = require("dotenv");
 // const MemoryStore = require("memorystore")(session);
 // import mongoose
+
+dotenv.config();
+
 const mongoose = require("mongoose");
-mongoose.connect(
-  // "mongodb+srv://libraryDevz:zone2002@cluster0.omfysmx.mongodb.net/db_staycation?retryWrites=true&w=majority",
-  "mongodb://localhost:27017/db_staycation",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    connectTimeoutMS: 30000,
-  }
-);
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  connectTimeoutMS: 30000,
+});
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
