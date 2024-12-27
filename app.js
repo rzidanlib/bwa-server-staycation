@@ -26,7 +26,8 @@ const apiRouter = require("./routes/api");
 
 var app = express();
 app.set("etag", "strong");
-app.use(cors({ origin: true, credentials: true }));
+// app.use(cors({ origin: true, credentials: true }));
+app.use(cors());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
