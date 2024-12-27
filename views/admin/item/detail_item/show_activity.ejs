@@ -46,7 +46,7 @@
                   <td><%= activity[i].name %></td>
                   <td><%= activity[i].type %></td>
                   <td>
-                    <img src="<%= baseUrl %>/<%= activity[i].imageUrl %>" alt="imageUrl" height="70px" width="70px">
+                    <img src="<%= activity[i].imageUrl %>" alt="imageUrl" height="70px" width="70px">
                   </td>
                   <td>
                     <form action="/admin//item/<%= itemId %>/activity/<%= activity[i].id %>?_method=DELETE" method="POST">

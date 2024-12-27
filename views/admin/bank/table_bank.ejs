@@ -27,7 +27,7 @@
             <td><%= bank[i].nomorRekening %></td>
             <td><%= bank[i].name %></td>
             <td>
-              <img src="<%= baseUrl %>/<%= bank[i].imageUrl %>" alt="imageUrl" height="40" width="100">
+              <img src="<%= bank[i].imageUrl %>" alt="imageUrl" height="40" width="100">
             </td>
             <td>
               <form action="/admin/bank/<%= bank[i].id %>?_method=DELETE" method="POST">

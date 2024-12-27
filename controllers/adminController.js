@@ -10,9 +10,7 @@ const Users = require("../models/Users");
 const fs = require("fs-extra");
 const path = require("path");
 const bcrypt = require("bcryptjs");
-const config = require("../config/env");
-
-const baseUrl = config.BASE_URL;
+const cloudinary = require("../config/cloudinary");
 
 module.exports = {
   viewSignin: async (req, res) => {
@@ -155,7 +153,6 @@ module.exports = {
         alert,
         title: "Staycation | Bank",
         user: req.session.user,
-        baseUrl,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -166,12 +163,14 @@ module.exports = {
 
   addBank: async (req, res) => {
     try {
+      console.log("upload : ", req.file);
       const { name, nameBank, nomorRekening } = req.body;
+      const imageUrl = req.file ? req.file.path : "";
       await Bank.create({
         name,
         nameBank,
         nomorRekening,
-        imageUrl: `images/${req.file.filename}`,
+        imageUrl,
       });
       req.flash("alertMessage", "Success Add Bank");
       req.flash("alertStatus", "success");
@@ -196,11 +195,12 @@ module.exports = {
         req.flash("alertStatus", "success");
         res.redirect("/admin/bank");
       } else {
-        await fs.unlink(path.join(`public/${bank.imageUrl}`));
+        const publicId = bank.imageUrl.match(/bwa-staycation\/images\/[^.]+/);
+        await cloudinary.uploader.destroy(publicId);
         bank.name = name;
         bank.nameBank = nameBank;
         bank.nomorRekening = nomorRekening;
-        bank.imageUrl = `images/${req.file.filename}`;
+        bank.imageUrl = req.file.path;
         await bank.save();
         req.flash("alertMessage", "Success Edit Bank");
         req.flash("alertStatus", "success");
@@ -217,7 +217,8 @@ module.exports = {
     try {
       const { id } = req.params;
       const bank = await Bank.findOne({ _id: id });
-      await fs.unlink(path.join(`public/${bank.imageUrl}`));
+      const publicId = bank.imageUrl.match(/bwa-staycation\/images\/[^.]+/);
+      await cloudinary.uploader.destroy(publicId);
       await bank.remove();
       req.flash("alertMessage", "Success Delete Bank");
       req.flash("alertStatus", "success");
@@ -272,7 +273,7 @@ module.exports = {
         await category.save();
         for (let i = 0; i < req.files.length; i++) {
           const imageSave = await Image.create({
-            imageUrl: `images/${req.files[i].filename}`,
+            imageUrl: req.files[i].path,
           });
           item.imageId.push({ _id: imageSave._id });
           await item.save();
@@ -304,7 +305,6 @@ module.exports = {
         item,
         action: "show image",
         user: req.session.user,
-        baseUrl,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -361,8 +361,11 @@ module.exports = {
       if (req.files.length > 0) {
         for (let i = 0; i < item.imageId.length; i++) {
           const imageUpdate = await Image.findOne({ _id: item.imageId[i]._id });
-          await fs.unlink(path.join(`public/${imageUpdate.imageUrl}`));
-          imageUpdate.imageUrl = `images/${req.files[i].filename}`;
+          const publicId = imageUpdate.imageUrl.match(
+            /bwa-staycation\/images\/[^.]+/
+          );
+          await cloudinary.uploader.destroy(publicId);
+          imageUpdate.imageUrl = req.files[i].path;
           await imageUpdate.save();
         }
         item.title = title;
@@ -399,8 +402,10 @@ module.exports = {
       for (let i = 0; i < item.imageId.length; i++) {
         Image.findOne({ _id: item.imageId[i]._id })
           .then((image) => {
-            fs.unlink(path.join(`public/${image.imageUrl}`));
-            image.remove();
+            const publicId = image.imageUrl.match(
+              /bwa-staycation\/images\/[^.]+/
+            );
+            cloudinary.uploader.destroy(publicId);
           })
           .catch((error) => {
             req.flash("alertMessage", `${error.message}`);
@@ -434,7 +439,6 @@ module.exports = {
         feature,
         activity,
         user: req.session.user,
-        baseUrl,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -455,7 +459,7 @@ module.exports = {
         name,
         qty,
         itemId,
-        imageUrl: `images/${req.file.filename}`,
+        imageUrl: req.file.path,
       });
       const item = await Item.findOne({ _id: itemId });
       item.featureId.push({ _id: feature._id });
@@ -482,10 +486,12 @@ module.exports = {
         req.flash("alertStatus", "success");
         res.redirect(`/admin/item/show-detail-item/${itemId}`);
       } else {
-        await fs.unlink(path.join(`public/${feature.imageUrl}`));
+        await cloudinary.uploader.destroy(
+          feature.imageUrl.match(/bwa-staycation\/images\/[^.]+/)
+        );
         feature.name = name;
         feature.qty = qty;
-        feature.imageUrl = `images/${req.file.filename}`;
+        feature.imageUrl = req.file.path;
         await feature.save();
         req.flash("alertMessage", "Success Edit Feature");
         req.flash("alertStatus", "success");
@@ -509,7 +515,9 @@ module.exports = {
           await item.save();
         }
       }
-      await fs.unlink(path.join(`public/${feature.imageUrl}`));
+      await cloudinary.uploader.destroy(
+        feature.imageUrl.match(/bwa-staycation\/images\/[^.]+/)
+      );
       await feature.remove();
       req.flash("alertMessage", "Success Delete feature");
       req.flash("alertStatus", "success");
@@ -533,7 +541,7 @@ module.exports = {
         name,
         type,
         itemId,
-        imageUrl: `images/${req.file.filename}`,
+        imageUrl: req.file.path,
       });
       const item = await Item.findOne({ _id: itemId });
       item.activityId.push({ _id: activity._id });
@@ -560,10 +568,12 @@ module.exports = {
         req.flash("alertStatus", "success");
         res.redirect(`/admin/item/show-detail-item/${itemId}`);
       } else {
-        await fs.unlink(path.join(`public/${activity.imageUrl}`));
+        await cloudinary.uploader.destroy(
+          activity.imageUrl.match(/bwa-staycation\/images\/[^.]+/)
+        );
         activity.name = name;
         activity.type = type;
-        activity.imageUrl = `images/${req.file.filename}`;
+        activity.imageUrl = req.file.path;
         await activity.save();
         req.flash("alertMessage", "Success Edit activity");
         req.flash("alertStatus", "success");
@@ -587,7 +597,9 @@ module.exports = {
           await item.save();
         }
       }
-      await fs.unlink(path.join(`public/${activity.imageUrl}`));
+      await cloudinary.uploader.destroy(
+        feature.imageUrl.match(/bwa-staycation\/images\/[^.]+/)
+      );
       await activity.remove();
       req.flash("alertMessage", "Success Delete Activity");
       req.flash("alertStatus", "success");
@@ -628,7 +640,6 @@ module.exports = {
         user: req.session.user,
         booking,
         alert,
-        baseUrl,
       });
     } catch (error) {
       res.redirect(`/admin/booking`);
