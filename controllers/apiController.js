@@ -171,7 +171,7 @@ module.exports = {
 
         memberId: member.id,
         payments: {
-          proofPayment: `images/${req.file.filename}`,
+          proofPayment: req.file.path,
           bankFrom: bankFrom,
           accountHolder: accountHolder,
         },
