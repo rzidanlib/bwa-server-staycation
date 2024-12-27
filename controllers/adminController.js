@@ -163,7 +163,6 @@ module.exports = {
 
   addBank: async (req, res) => {
     try {
-      console.log("upload : ", req.file);
       const { name, nameBank, nomorRekening } = req.body;
       const imageUrl = req.file ? req.file.path : "";
       await Bank.create({
@@ -325,7 +324,6 @@ module.exports = {
           path: "categoryId",
           select: "id name",
         });
-      // console.log(item);
       const category = await Category.find();
       const alertMessage = req.flash("alertMessage");
       const alertStatus = req.flash("alertStatus");
